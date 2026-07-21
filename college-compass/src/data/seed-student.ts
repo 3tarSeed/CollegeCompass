@@ -6,15 +6,15 @@ import type { StudentProfile, Scholarship } from "@/lib/types";
 import { DEFAULT_WEIGHTS } from "@/lib/types";
 
 export const SEED_STUDENT: StudentProfile = {
-  firstName: "Jordan",
+  firstName: "Sophia",
   graduationYear: 2027,
   homeState: "MD",
-  homeZip: "20814",
+  homeZip: "20854",
   gpaWeighted: 4.18,
-  gpaUnweighted: 3.72,
-  actComposite: 29,
-  actSuperscore: 30,
-  satScore: 1340,
+  gpaUnweighted: 3.52,
+  actComposite: 35,
+  actSuperscore: 35,
+  satScore: 1550,
   apCourses: 5,
   ibCourses: 0,
   honorsCourses: 4,
