@@ -10,7 +10,7 @@ export const SEED_STUDENT: StudentProfile = {
   graduationYear: 2027,
   homeState: "MD",
   homeZip: "20854",
-  gpaWeighted: 4.18,
+  gpaWeighted: 3.80,
   gpaUnweighted: 3.52,
   actComposite: 35,
   actSuperscore: 35,
