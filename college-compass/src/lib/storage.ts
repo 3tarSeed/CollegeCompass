@@ -167,13 +167,59 @@ export async function saveRemoteProfile(userId: string, profile: StudentProfile)
   });
 }
 
+function collegeToRow(c: College) {
+  return {
+    id: c.id,
+    name: c.name,
+    city: c.city,
+    state: c.state,
+    zip: c.zip,
+    latitude: c.latitude,
+    longitude: c.longitude,
+    website: c.website,
+    admissions_url: c.admissionsUrl,
+    net_price_calculator_url: c.netPriceCalculatorUrl,
+    ownership: c.ownership,
+    level: c.level,
+    enrollment: c.enrollment,
+    campus_setting: c.campusSetting,
+    ncaa_division: c.ncaaDivision,
+    acceptance_rate: c.acceptanceRate,
+    act_25: c.act25, act_75: c.act75,
+    sat_25: c.sat25, sat_75: c.sat75,
+    test_policy: c.testPolicy,
+    graduation_rate: c.graduationRate,
+    retention_rate: c.retentionRate,
+    tuition_in_state: c.tuitionInState,
+    tuition_out_state: c.tuitionOutState,
+    fees: c.fees,
+    housing_meals: c.housingMeals,
+    books: c.books,
+    transportation: c.transportation,
+    personal_expenses: c.personalExpenses,
+    avg_net_price: c.avgNetPrice,
+    net_price_by_income: c.netPriceByIncome,
+    avg_grant_aid: c.avgGrantAid,
+    median_federal_debt: c.medianFederalDebt,
+    median_earnings_10yr: c.medianEarnings10yr,
+    majors: c.majors,
+    application_fee: c.applicationFee,
+    is_sample: c.isSample ?? false,
+    updated_at: new Date().toISOString(),
+  };
+}
+
 export async function syncRemoteCollections(
   userId: string,
-  state: Pick<PersistedState, "saved" | "tasks" | "compareIds" | "scholarships">,
+  state: Pick<PersistedState, "saved" | "tasks" | "compareIds" | "scholarships" | "pinnedColleges">,
 ): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
   // Simple replace-style sync keeps the adapter predictable.
+  // Cache any live college records first so FK references resolve.
+  if (state.pinnedColleges?.length) {
+    await sb.from("colleges").upsert(state.pinnedColleges.map(collegeToRow));
+  }
   await Promise.all([
     sb.from("college_saved").delete().eq("user_id", userId),
     sb.from("college_application_tasks").delete().eq("user_id", userId),
