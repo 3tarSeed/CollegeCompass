@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import {
   Bookmark,
+  Sparkles,
   CalendarClock,
   ClipboardList,
   GitCompareArrows,
@@ -23,6 +24,7 @@ const LINKS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/find", label: "Find Colleges", icon: Search },
   { href: "/my-colleges", label: "My Colleges", icon: Bookmark },
+  { href: "/advisor", label: "AI Advisor", icon: Sparkles },
   { href: "/compare", label: "Compare", icon: GitCompareArrows },
   { href: "/applications", label: "Applications", icon: ClipboardList },
   { href: "/deadlines", label: "Deadlines", icon: CalendarClock },

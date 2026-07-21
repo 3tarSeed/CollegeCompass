@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { SEED_COLLEGES } from "@/data/seed-colleges";
-import { SEED_SCHOLARSHIPS, SEED_STUDENT } from "@/data/seed-student";
+import { SEED_STUDENT } from "@/data/seed-student";
 import {
   clearLocal,
   loadLocal,
@@ -31,7 +31,7 @@ import { MAX_COMPARE } from "@/lib/types";
 
 interface AppState {
   ready: boolean;
-  demoMode: boolean;
+  guestMode: boolean;
   supabaseAvailable: boolean;
   userEmail: string | null;
   profile: StudentProfile;
@@ -52,7 +52,7 @@ interface AppState {
   updateScholarship: (id: string, patch: Partial<Scholarship>) => void;
   removeScholarship: (id: string) => void;
   signOut: () => Promise<void>;
-  resetDemo: () => void;
+  resetAll: () => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -105,7 +105,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [saved, setSaved] = useState<SavedCollege[]>([]);
   const [tasks, setTasks] = useState<ApplicationTask[]>([]);
   const [compareIds, setCompareIds] = useState<string[]>([]);
-  const [scholarships, setScholarships] = useState<Scholarship[]>([]); // starts empty; samples only via explicit demo reset
+  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const remoteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const colleges = useMemo(() => {
@@ -115,12 +115,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return Array.from(map.values());
   }, [fetched]);
 
-  // ── Boot: auth session → remote load, else local demo state ──
+  // ── Boot: auth session → remote load, else local guest state ──
   useEffect(() => {
     let cancelled = false;
     async function boot() {
       // Restore cached live-college records first so saved/compare ids resolve
-      // in both demo and signed-in modes.
+      // for both guests and signed-in users.
       const cached = loadLocal();
       if (cached?.pinnedColleges?.length && !cancelled) {
         setFetched(cached.pinnedColleges);
@@ -165,6 +165,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       sub?.data.subscription.unsubscribe();
     };
   }, []);
+
+  // ── Reconcile: drop saved/compare ids whose college record can't be
+  //    resolved (e.g. compared in an old session before records were cached),
+  //    so counts always match what's actually on screen. ──
+  useEffect(() => {
+    if (!ready) return;
+    const known = new Set(colleges.map((c) => c.id));
+    setCompareIds((prev) => (prev.every((id) => known.has(id)) ? prev : prev.filter((id) => known.has(id))));
+    setSaved((prev) => (prev.every((s) => known.has(s.collegeId)) ? prev : prev.filter((s) => known.has(s.collegeId))));
+    setTasks((prev) => (prev.every((t) => known.has(t.collegeId)) ? prev : prev.filter((t) => known.has(t.collegeId))));
+  }, [ready, colleges]);
 
   // ── Persist on change (local always; remote debounced when signed in) ──
   useEffect(() => {
@@ -254,18 +265,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setUserEmail(null);
   }, []);
 
-  const resetDemo = useCallback(() => {
+  const resetAll = useCallback(() => {
     clearLocal();
     setProfile(SEED_STUDENT);
     setSaved([]);
     setTasks([]);
     setCompareIds([]);
-    setScholarships(SEED_SCHOLARSHIPS);
+    setScholarships([]);
   }, []);
 
   const value: AppState = {
     ready,
-    demoMode: !supabaseConfigured() || !userId,
+    guestMode: !supabaseConfigured() || !userId,
     supabaseAvailable: supabaseConfigured(),
     userEmail,
     profile,
@@ -286,7 +297,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updateScholarship,
     removeScholarship,
     signOut,
-    resetDemo,
+    resetAll,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

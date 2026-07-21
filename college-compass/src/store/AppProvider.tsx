@@ -166,6 +166,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // ── Reconcile: drop saved/compare ids whose college record can't be
+  //    resolved (e.g. compared in an old session before records were cached),
+  //    so counts always match what's actually on screen. ──
+  useEffect(() => {
+    if (!ready) return;
+    const known = new Set(colleges.map((c) => c.id));
+    setCompareIds((prev) => (prev.every((id) => known.has(id)) ? prev : prev.filter((id) => known.has(id))));
+    setSaved((prev) => (prev.every((s) => known.has(s.collegeId)) ? prev : prev.filter((s) => known.has(s.collegeId))));
+    setTasks((prev) => (prev.every((t) => known.has(t.collegeId)) ? prev : prev.filter((t) => known.has(t.collegeId))));
+  }, [ready, colleges]);
+
   // ── Persist on change (local always; remote debounced when signed in) ──
   useEffect(() => {
     if (!ready) return;
