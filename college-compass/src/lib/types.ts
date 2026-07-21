@@ -102,6 +102,8 @@ export interface College {
   medianFederalDebt: number | null;
   medianEarnings10yr: number | null;
   majors: string[];
+  /** Majors ranked by share of degrees awarded (0-1), most popular first. */
+  majorShares: { name: string; share: number }[] | null;
   /** Share of enrolled students by race/ethnicity (0-1), from federal data. */
   demographics: Partial<Record<RaceKey, number>> | null;
   /** Share of undergrads receiving federal Pell Grants (0-1). */

@@ -110,13 +110,18 @@ const PROGRAM_LABELS: Record<string, string> = {
   "latest.academics.program_percentage.agriculture": "Agriculture",
 };
 
-function majors(r: Raw): string[] {
-  const out: string[] = [];
+function majorShares(r: Raw): { name: string; share: number }[] | null {
+  const out: { name: string; share: number }[] = [];
   for (const [key, label] of Object.entries(PROGRAM_LABELS)) {
     const v = r[key];
-    if (typeof v === "number" && v > 0) out.push(label);
+    if (typeof v === "number" && v > 0) out.push({ name: label, share: v });
   }
-  return out;
+  out.sort((a, b) => b.share - a.share);
+  return out.length ? out : null;
+}
+
+function majors(r: Raw): string[] {
+  return (majorShares(r) ?? []).map((m) => m.name);
 }
 
 function incomeBands(r: Raw): College["netPriceByIncome"] {
@@ -190,6 +195,7 @@ export function scorecardToCollege(r: Raw, dataYear: string): College {
     medianFederalDebt: num(r, "latest.aid.median_debt_suppressed.overall"),
     medianEarnings10yr: num(r, "latest.earnings.10_yrs_after_entry.median"),
     majors: majors(r),
+    majorShares: majorShares(r),
     demographics: (() => {
       const get = (k: string) => num(r, `latest.student.demographics.race_ethnicity.${k}`);
       const d: Record<string, number | null> = {

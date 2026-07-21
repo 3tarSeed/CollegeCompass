@@ -73,6 +73,7 @@ create table if not exists public.colleges (
   median_federal_debt numeric(10, 2),
   median_earnings_10yr numeric(10, 2),
   majors text[] default '{}',
+  major_shares jsonb,
   demographics jsonb,
   pell_grant_rate numeric(5, 4),
   application_fee numeric(6, 2),

@@ -203,6 +203,7 @@ function collegeToRow(c: College) {
     median_federal_debt: c.medianFederalDebt,
     median_earnings_10yr: c.medianEarnings10yr,
     majors: c.majors,
+    major_shares: c.majorShares,
     demographics: c.demographics,
     pell_grant_rate: c.pellGrantRate,
     application_fee: c.applicationFee,

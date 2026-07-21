@@ -144,10 +144,37 @@ export default function CollegeProfilePage() {
             <Row label="Typical federal debt at graduation" value={fmtMoney(college.medianFederalDebt)} />
             <Row label="Median earnings (10 yrs after entry)" value={fmtMoney(college.medianEarnings10yr)} />
           </dl>
-          <h3 className="mt-4 text-sm font-semibold text-navy">Available majors</h3>
-          {college.majors.length === 0 ? (
-            <p className="mt-1 text-sm text-slate-500">{NOT_REPORTED}</p>
-          ) : (
+          <h3 className="mt-4 text-sm font-semibold text-navy">Majors by popularity</h3>
+          {college.majorShares?.length ? (
+            <>
+              <p className="text-xs text-slate-500">Share of degrees awarded in each field, most popular first.</p>
+              <ol className="mt-2 space-y-1.5">
+                {college.majorShares.map((m, i) => {
+                  const mine = profile.intendedMajors.some(
+                    (x) => m.name.toLowerCase().includes(x.toLowerCase()) || x.toLowerCase().includes(m.name.toLowerCase()),
+                  );
+                  return (
+                    <li key={m.name} className="flex items-center gap-2 text-sm">
+                      <span className="w-5 shrink-0 text-right text-xs tabular-nums text-slate-400">{i + 1}.</span>
+                      <span className={`min-w-0 flex-1 truncate ${mine ? "font-semibold text-teal" : "text-slate-700"}`}>
+                        {m.name}{mine ? " ← your intended major" : ""}
+                      </span>
+                      <span className="h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-slate-100">
+                        <span className="block h-full rounded-full bg-brand" style={{ width: `${Math.min(100, Math.round((m.share / college.majorShares![0].share) * 100))}%` }} />
+                      </span>
+                      <span className="w-10 shrink-0 text-right text-xs tabular-nums text-slate-500">{(m.share * 100).toFixed(1)}%</span>
+                    </li>
+                  );
+                })}
+              </ol>
+              <p className="mt-2 text-[11px] text-slate-500">
+                Acceptance rate applies to the college overall ({fmtPct(college.acceptanceRate)}) — colleges
+                don&apos;t publish per-major admission rates in federal data. Competitive direct-admit
+                programs (e.g. nursing, engineering, CS) can be harder than the overall rate suggests;
+                confirm with the department.
+              </p>
+            </>
+          ) : college.majors.length ? (
             <ul className="mt-2 flex flex-wrap gap-1.5">
               {college.majors.map((m) => (
                 <li key={m}>
@@ -157,6 +184,8 @@ export default function CollegeProfilePage() {
                 </li>
               ))}
             </ul>
+          ) : (
+            <p className="mt-1 text-sm text-slate-500">{NOT_REPORTED}</p>
           )}
           <DataProvenance provenance={college.provenance} verifyUrl={college.website} />
         </section>
