@@ -32,6 +32,7 @@ import { MAX_COMPARE } from "@/lib/types";
 interface AppState {
   ready: boolean;
   demoMode: boolean;
+  supabaseAvailable: boolean;
   userEmail: string | null;
   profile: StudentProfile;
   colleges: College[]; // seed + fetched, deduped by id (live never overwritten by sample)
@@ -175,7 +176,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (remoteTimer.current) clearTimeout(remoteTimer.current);
       remoteTimer.current = setTimeout(() => {
         saveRemoteProfile(userId, profile).catch(() => {});
-        syncRemoteCollections(userId, { saved, tasks, compareIds, scholarships }).catch(() => {});
+        syncRemoteCollections(userId, { saved, tasks, compareIds, scholarships, pinnedColleges }).catch(() => {});
       }, 1200);
     }
   }, [ready, userId, profile, saved, tasks, compareIds, scholarships, colleges]);
@@ -265,6 +266,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const value: AppState = {
     ready,
     demoMode: !supabaseConfigured() || !userId,
+    supabaseAvailable: supabaseConfigured(),
     userEmail,
     profile,
     colleges,
