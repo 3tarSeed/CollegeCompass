@@ -15,7 +15,7 @@ npm run dev
 
 Open http://localhost:3000. With no environment variables set, the app runs in **demo mode**:
 
-- A demo student profile ("Jordan") and **seven clearly-labeled sample colleges** are loaded from `src/data/`.
+- A demo student profile ("Sophia") and **seven clearly-labeled sample colleges** are loaded from `src/data/`.
 - Everything you change (profile, saved colleges, tasks, scholarships) persists to browser `localStorage`.
 - Sample records are flagged `isSample: true` everywhere and shown with an amber **Sample data** badge. Live and sample values are never mixed in one record.
 
