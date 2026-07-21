@@ -97,7 +97,7 @@ create table if not exists public.comparison_lists (
   user_id uuid not null references public.profiles (id) on delete cascade,
   name text not null default 'My comparison',
   college_ids text[] not null default '{}',
-  constraint max_five check (coalesce(array_length(college_ids, 1), 0) <= 5),
+  constraint max_compare check (coalesce(array_length(college_ids, 1), 0) <= 8),
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

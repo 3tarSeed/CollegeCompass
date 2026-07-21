@@ -27,6 +27,7 @@ import type {
   StudentProfile,
   TaskStatus,
 } from "@/lib/types";
+import { MAX_COMPARE } from "@/lib/types";
 
 interface AppState {
   ready: boolean;
@@ -103,7 +104,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [saved, setSaved] = useState<SavedCollege[]>([]);
   const [tasks, setTasks] = useState<ApplicationTask[]>([]);
   const [compareIds, setCompareIds] = useState<string[]>([]);
-  const [scholarships, setScholarships] = useState<Scholarship[]>(SEED_SCHOLARSHIPS);
+  const [scholarships, setScholarships] = useState<Scholarship[]>([]); // starts empty; samples only via explicit demo reset
   const remoteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const colleges = useMemo(() => {
@@ -222,7 +223,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const toggleCompare = useCallback((id: string) => {
     setCompareIds((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= 5) return prev; // hard cap of five
+      if (prev.length >= MAX_COMPARE) return prev; // hard cap
       return [...prev, id];
     });
   }, []);

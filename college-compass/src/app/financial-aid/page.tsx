@@ -1,12 +1,68 @@
 "use client";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
-import { ExternalLink, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, HelpCircle, Plus, Trash2 } from "lucide-react";
 import { EmptyState, LoadingState, Pill, SampleBadge } from "@/components/ui";
-import { estimateCost } from "@/lib/cost";
+import { estimateCost, type CostBreakdown } from "@/lib/cost";
+import { INCOME_BAND_LABELS, type IncomeBand } from "@/lib/types";
 import { fmtDate, fmtMoney, NOT_REPORTED } from "@/lib/format";
 import type { College, Scholarship } from "@/lib/types";
 import { useApp } from "@/store/AppProvider";
+
+/** "How was this estimated?" popover for the grants line. */
+function GrantsHelp({
+  college, cost, incomeBand,
+}: { college: College; cost: CostBreakdown; incomeBand: IncomeBand | "" }) {
+  const [open, setOpen] = useState(false);
+  const bandLabel = incomeBand ? INCOME_BAND_LABELS[incomeBand] : null;
+  const bandNet = incomeBand ? college.netPriceByIncome?.[incomeBand] ?? null : null;
+  return (
+    <span className="relative inline-flex">
+      <button
+        type="button"
+        aria-label="How estimated grants were calculated"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        className="ml-1 text-slate-400 hover:text-brand"
+      >
+        <HelpCircle size={13} />
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute bottom-full left-1/2 z-30 mb-2 w-72 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-left text-xs font-normal text-slate-600 shadow-lift"
+        >
+          <strong className="block text-navy">How this was estimated</strong>
+          {cost.usedIncomeBandNetPrice && bandLabel && bandNet !== null && cost.coa !== null ? (
+            <span className="mt-1 block">
+              This college reports an average net price of <strong>{fmtMoney(bandNet)}</strong> for
+              households earning <strong>{bandLabel}</strong> (your income band on your profile).
+              Estimated grants = cost of attendance {fmtMoney(cost.coa)} − {fmtMoney(bandNet)} ={" "}
+              <strong>{fmtMoney(cost.grants)}</strong>.
+            </span>
+          ) : college.avgGrantAid !== null ? (
+            <span className="mt-1 block">
+              This college doesn&apos;t report a net price for your income band, so the estimate uses
+              its <strong>average grant &amp; scholarship aid across all aided students</strong>:{" "}
+              <strong>{fmtMoney(cost.grants)}</strong>. Set your household income range on your
+              profile for a band-specific estimate where available.
+            </span>
+          ) : (
+            <span className="mt-1 block">
+              This college reports no grant data, so grants are shown as {fmtMoney(cost.grants)}.
+              Use its official net price calculator for a real figure.
+            </span>
+          )}
+          <span className="mt-1.5 block text-slate-400">
+            Source: U.S. Dept. of Education data for this college. An estimate only — actual aid is
+            decided by the college and is never guaranteed. Loans and work-study are never counted as grants.
+          </span>
+        </span>
+      )}
+    </span>
+  );
+}
 
 const STATUS_TONES: Record<Scholarship["status"], "slate" | "navy" | "green" | "red"> = {
   planned: "slate",
@@ -79,7 +135,7 @@ export default function FinancialAidPage() {
         </div>
 
         {scholarships.length === 0 ? (
-          <p className="mt-4 text-sm text-slate-500">No scholarships tracked yet.</p>
+          <p className="mt-4 text-sm text-slate-500">No scholarships tracked yet. Add real scholarships you find (with their official source link) — the app doesn&apos;t list outside scholarships itself, so nothing here is ever made up.</p>
         ) : (
           <ul className="mt-4 divide-y divide-slate-100">
             {scholarships.map((s) => (
@@ -152,7 +208,7 @@ export default function FinancialAidPage() {
                   </div>
                   <dl className="mt-3 space-y-1.5 text-sm">
                     <div className="flex justify-between"><dt className="text-slate-500">Cost of attendance</dt><dd className="font-medium">{fmtMoney(cost.coa)}</dd></div>
-                    <div className="flex justify-between"><dt className="text-slate-500">Est. grants</dt><dd className="font-medium text-fitGreen">− {fmtMoney(cost.grants)}</dd></div>
+                    <div className="flex justify-between"><dt className="flex items-center text-slate-500">Est. grants<GrantsHelp college={c} cost={cost} incomeBand={profile.householdIncomeRange} /></dt><dd className="font-medium text-fitGreen">− {fmtMoney(cost.grants)}</dd></div>
                     <div className="flex justify-between"><dt className="text-slate-500">Your awarded scholarships</dt><dd className="font-medium text-fitGreen">− {fmtMoney(cost.scholarships)}</dd></div>
                     <div className="flex justify-between border-t border-slate-100 pt-1.5"><dt className="font-semibold text-navy">Est. net cost / yr</dt><dd className="font-bold text-teal">{fmtMoney(cost.netAnnual)}</dd></div>
                   </dl>

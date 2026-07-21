@@ -10,7 +10,7 @@ import { valueScore } from "@/lib/score";
 import {
   fmtDate, fmtMoney, fmtNum, fmtPct, fmtRange, NOT_REPORTED, OWNERSHIP_LABELS, PLAN_LABELS, TEST_POLICY_LABELS,
 } from "@/lib/format";
-import { MAX_COMPARE, type College } from "@/lib/types";
+import type { College } from "@/lib/types";
 import { useApp } from "@/store/AppProvider";
 
 type Best = "high" | "low" | "none";
@@ -221,7 +221,7 @@ export default function ComparePage() {
     return (
       <EmptyState
         title="Nothing to compare yet"
-        body={`Add up to ${MAX_COMPARE} colleges to your comparison from Find Colleges or any college page.`}
+        body="Add up to five colleges to your comparison from Find Colleges or any college page."
         action={<Link href="/find" className="btn-primary">Find colleges</Link>}
       />
     );
@@ -250,7 +250,7 @@ export default function ComparePage() {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">Compare</p>
-          <h1 className="text-2xl font-semibold lg:text-3xl">Side by side ({selected.length}/{MAX_COMPARE})</h1>
+          <h1 className="text-2xl font-semibold lg:text-3xl">Side by side ({selected.length}/5)</h1>
         </div>
         <div className="flex flex-wrap gap-4 text-sm">
           <label className="flex items-center gap-2">
