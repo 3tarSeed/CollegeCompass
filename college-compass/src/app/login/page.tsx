@@ -48,14 +48,13 @@ export default function LoginPage() {
         {!configured ? (
           <>
             <p className="mt-2 text-sm text-slate-600">
-              Supabase isn&apos;t configured, so accounts are unavailable. The app is fully usable in
-              <strong> demo mode</strong> — your profile, saved colleges and tasks are kept in this browser.
+              Accounts are unavailable right now, but the app is fully usable as a guest — your profile, saved colleges and tasks are kept in this browser.
             </p>
             <p className="mt-2 text-xs text-slate-500">
               To enable accounts, set <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
               <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (see .env.example), run the schema, and restart.
             </p>
-            <Link href="/" className="btn-primary mt-4">Continue in demo mode</Link>
+            <Link href="/" className="btn-primary mt-4">Continue as guest</Link>
           </>
         ) : state === "sent" ? (
           <p className="mt-3 text-sm text-slate-600" role="status">
@@ -90,7 +89,7 @@ export default function LoginPage() {
               <Mail size={15} /> {state === "sending" ? "Sending…" : "Email me a sign-in link"}
             </button>
             <Link href="/" className="mt-3 block text-sm text-brand hover:underline">
-              Or continue in demo mode
+              Or continue as a guest
             </Link>
           </>
         )}

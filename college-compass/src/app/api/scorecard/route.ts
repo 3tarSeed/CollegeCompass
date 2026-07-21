@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   if (!key) {
     return NextResponse.json(
       {
-        demo: true,
+        fallback: true,
         error:
           "COLLEGE_SCORECARD_API_KEY is not configured. The app is running on labeled sample data.",
       },

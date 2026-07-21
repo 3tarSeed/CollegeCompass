@@ -36,7 +36,25 @@ export interface ApplicationRequirement {
   required: boolean;
 }
 
+export type RaceKey =
+  | "white" | "black" | "hispanic" | "asian" | "aian"
+  | "nhpi" | "two_or_more" | "non_resident" | "unknown";
+
+export const RACE_LABELS: Record<RaceKey, string> = {
+  white: "White",
+  black: "Black or African American",
+  hispanic: "Hispanic or Latino",
+  asian: "Asian",
+  aian: "American Indian / Alaska Native",
+  nhpi: "Native Hawaiian / Pacific Islander",
+  two_or_more: "Two or more races",
+  non_resident: "International students",
+  unknown: "Race/ethnicity unknown",
+};
+
 export interface FinancialAidDetails {
+  /** The school's policy on outside-scholarship displacement, if published. */
+  scholarshipDisplacementPolicy: string | null;
   requiresFafsa: boolean | null;
   requiresCssProfile: boolean | null;
   priorityAidDeadline: string | null;
@@ -84,6 +102,10 @@ export interface College {
   medianFederalDebt: number | null;
   medianEarnings10yr: number | null;
   majors: string[];
+  /** Share of enrolled students by race/ethnicity (0-1), from federal data. */
+  demographics: Partial<Record<RaceKey, number>> | null;
+  /** Share of undergrads receiving federal Pell Grants (0-1). */
+  pellGrantRate: number | null;
   applicationFee: number | null;
   deadlines: CollegeDeadline[];
   requirements: ApplicationRequirement[];

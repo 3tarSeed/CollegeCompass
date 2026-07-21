@@ -1,6 +1,5 @@
 /**
- * SAMPLE DATA ONLY — demo student profile used when no account/profile exists.
- * Flagged `isSample: true` and shown with a "Demo profile" badge in the UI.
+ * Default starter profile used before a student fills in their own details.
  */
 import type { StudentProfile, Scholarship } from "@/lib/types";
 import { DEFAULT_WEIGHTS } from "@/lib/types";

@@ -6,16 +6,16 @@ Built with **Next.js (App Router) · TypeScript · Tailwind CSS · Supabase · R
 
 ---
 
-## Quick start (demo mode — zero configuration)
+## Quick start (guest mode — zero configuration)
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000. With no environment variables set, the app runs in **demo mode**:
+Open http://localhost:3000. With no environment variables set, the app runs in **guest mode**:
 
-- A demo student profile ("Sophia") and **seven clearly-labeled sample colleges** are loaded from `src/data/`.
+- A starter profile ("Sophia") and **seven clearly-labeled sample colleges** are loaded from `src/data/`.
 - Everything you change (profile, saved colleges, tasks, scholarships) persists to browser `localStorage`.
 - Sample records are flagged `isSample: true` everywhere and shown with an amber **Sample data** badge. Live and sample values are never mixed in one record.
 
@@ -46,7 +46,7 @@ Open http://localhost:3000. With no environment variables set, the app runs in *
    ```
 5. Enable the **Email (magic link)** auth provider in Supabase → Authentication.
 
-Signed-in users get their profile, saved colleges, tasks, comparison list and scholarships synced to Supabase (RLS restricts every row to its owner). Signed-out users keep working in local demo mode.
+Signed-in users get their profile, saved colleges, tasks, comparison list and scholarships synced to Supabase (RLS restricts every row to its owner). Signed-out users keep working locally as guests.
 
 ### 3. Tests
 

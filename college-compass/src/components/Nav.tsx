@@ -30,7 +30,7 @@ const LINKS = [
 
 export function Nav() {
   const pathname = usePathname();
-  const { demoMode, supabaseAvailable, userEmail, signOut, compareIds } = useApp();
+  const { guestMode, supabaseAvailable, userEmail, signOut, compareIds } = useApp();
   const [open, setOpen] = useState(false);
 
   const linkCls = (href: string) => {
@@ -56,7 +56,7 @@ export function Nav() {
     </nav>
   );
 
-  const account = demoMode ? (
+  const account = guestMode ? (
     <Link href="/login" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-blue-100/80 hover:bg-white/5 hover:text-white">
       <LogIn size={16} aria-hidden /> Sign in
     </Link>
@@ -96,11 +96,11 @@ export function Nav() {
         </Link>
         {nav}
         <div className="mt-auto border-t border-white/10 pt-3">
-          {demoMode && (
+          {guestMode && (
             <p className="mb-2 rounded-lg bg-amber-400/15 px-3 py-2 text-[11px] leading-snug text-amber-200">
               {supabaseAvailable
                 ? "Guest — changes stay in this browser. Sign in to sync them to your account."
-                : "Demo mode — accounts aren't configured, so changes stay in this browser."}
+                : "Accounts are unavailable right now — changes stay in this browser."}
             </p>
           )}
           {account}

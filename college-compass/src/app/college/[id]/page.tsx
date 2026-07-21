@@ -2,13 +2,13 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
-import { Bookmark, BookmarkCheck, ExternalLink, GitCompareArrows } from "lucide-react";
+import { Bookmark, BookmarkCheck, ExternalLink, GitCompareArrows, Printer } from "lucide-react";
 import { CompassDial, ConfidenceBadge, FitBadge } from "@/components/FitBadge";
 import { DataProvenance } from "@/components/DataProvenance";
-import { CostStackChart, NetPriceByIncomeChart } from "@/components/charts";
+import { CostStackChart, DemographicsChart, NetPriceByIncomeChart } from "@/components/charts";
 import { EmptyState, LoadingState, Pill, SampleBadge } from "@/components/ui";
 import { classifyFit } from "@/lib/fit";
-import { estimateCost } from "@/lib/cost";
+import { estimateCost, grantLikelihood } from "@/lib/cost";
 import { valueScore } from "@/lib/score";
 import {
   daysUntil,
@@ -54,6 +54,7 @@ export default function CollegeProfilePage() {
   const fit = classifyFit(profile, college);
   const cost = estimateCost(profile, college, { extraScholarships });
   const score = valueScore(profile, college);
+  const grants = grantLikelihood(profile, college);
   const saved = isSaved(college.id);
   const comparing = compareIds.includes(college.id);
 
@@ -85,6 +86,9 @@ export default function CollegeProfilePage() {
               )}
               <button onClick={() => toggleSaved(college)} className={saved ? "btn-teal" : "btn-primary"} aria-pressed={saved}>
                 {saved ? <><BookmarkCheck size={15} /> Saved</> : <><Bookmark size={15} /> Save college</>}
+              </button>
+              <button className="btn-ghost no-print" onClick={() => window.print()}>
+                <Printer size={15} /> Print
               </button>
               <button
                 onClick={() => toggleCompare(college.id)}
@@ -155,6 +159,50 @@ export default function CollegeProfilePage() {
             </ul>
           )}
           <DataProvenance provenance={college.provenance} verifyUrl={college.website} />
+        </section>
+
+        {/* Student body */}
+        <section className="card p-6" aria-labelledby="body-h">
+          <h2 id="body-h" className="text-lg font-semibold">Student body</h2>
+          <p className="text-xs text-slate-500">Share of enrolled students by race and ethnicity.</p>
+          <div className="mt-3">
+            <DemographicsChart college={college} />
+          </div>
+          <dl className="mt-2">
+            <Row label="Students receiving federal Pell Grants" value={fmtPct(college.pellGrantRate)} />
+          </dl>
+          <DataProvenance provenance={college.provenance} verifyUrl={college.website} />
+        </section>
+
+        {/* Grant & scholarship outlook */}
+        <section className="card p-6" aria-labelledby="grants-h">
+          <h2 id="grants-h" className="text-lg font-semibold">Grant &amp; scholarship outlook</h2>
+          <div className="mt-2">
+            <Pill tone={grants.level === "Higher" ? "green" : grants.level === "Moderate" ? "amber" : grants.level === "Limited" ? "red" : "slate"}>
+              {grants.level === "Unknown" ? "Not enough data" : `${grants.level} likelihood of grant/scholarship aid`}
+            </Pill>
+          </div>
+          <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-slate-600">
+            {grants.reasons.map((r, i) => <li key={i}>{r}</li>)}
+          </ul>
+          <p className="mt-2 text-[11px] text-slate-500">
+            An app-generated indicator from this college&apos;s reported aid data — not a probability
+            and never a promise. Actual awards are decided by the college after reviewing your application.
+          </p>
+          <h3 className="mt-4 text-sm font-semibold text-navy">Outside-scholarship displacement policy</h3>
+          {college.financialAid?.scholarshipDisplacementPolicy ? (
+            <p className="mt-1 text-sm text-slate-700">{college.financialAid.scholarshipDisplacementPolicy}</p>
+          ) : (
+            <p className="mt-1 text-sm text-slate-500">
+              {NOT_REPORTED}. Displacement rules (whether outside scholarships reduce the aid a college
+              gives you) aren&apos;t published in federal data — ask this college&apos;s financial aid
+              office whether outside awards reduce loans first or reduce grants.
+            </p>
+          )}
+          <DataProvenance
+            provenance={college.financialAid?.provenance ?? college.provenance}
+            verifyUrl={college.website}
+          />
         </section>
 
         {/* Cost of attendance */}
@@ -295,6 +343,11 @@ export default function CollegeProfilePage() {
           />
         </section>
       </div>
+      <p className="print-only text-[11px] text-slate-500">
+        Printed from College Compass on {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}.
+        Fit categories, cost projections and the grant outlook are personalized estimates — not
+        predictions or promises. Verify deadlines and aid policies on the college&apos;s website.
+      </p>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import React from "react";
 import { RotateCcw } from "lucide-react";
 import { WeightSliders } from "@/components/WeightSliders";
-import { LoadingState, SampleBadge } from "@/components/ui";
+import { LoadingState } from "@/components/ui";
 import { US_STATES } from "@/lib/geo";
 import { INCOME_BAND_LABELS, type IncomeBand, type StudentProfile } from "@/lib/types";
 import { useApp } from "@/store/AppProvider";
@@ -37,7 +37,7 @@ function CsvInput({
   const [text, setText] = React.useState(csv(value));
   const [focused, setFocused] = React.useState(false);
   React.useEffect(() => {
-    if (!focused) setText(csv(value)); // adopt external changes (e.g. demo reset) when not typing
+    if (!focused) setText(csv(value)); // adopt external changes (e.g. a reset) when not typing
   }, [value, focused]);
   return (
     <input
@@ -56,7 +56,7 @@ function CsvInput({
 }
 
 export default function ProfilePage() {
-  const { ready, profile, updateProfile, resetDemo, demoMode } = useApp();
+  const { ready, profile, updateProfile, resetAll, guestMode } = useApp();
   if (!ready) return <LoadingState label="Loading profile…" />;
 
   const num = (v: string): number | null => (v === "" ? null : Number(v));
@@ -68,15 +68,15 @@ export default function ProfilePage() {
         <div>
           <p className="eyebrow">Profile</p>
           <h1 className="flex items-center gap-2 text-2xl font-semibold lg:text-3xl">
-            Your student profile {p.isSample && <SampleBadge label="Demo profile" />}
+            Your student profile
           </h1>
           <p className="mt-1 text-sm text-slate-600">
             Everything here powers your fit estimates, cost projections and Value &amp; Fit score.
-            Changes save automatically{demoMode ? " to this browser (demo mode)" : ""}.
+            Changes save automatically{guestMode ? " to this browser — sign in to sync them to your account" : ""}.
           </p>
         </div>
-        <button className="btn-ghost" onClick={resetDemo}>
-          <RotateCcw size={14} /> Reset to demo data
+        <button className="btn-ghost" onClick={resetAll}>
+          <RotateCcw size={14} /> Reset profile
         </button>
       </header>
 

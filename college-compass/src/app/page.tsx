@@ -4,7 +4,7 @@ import React from "react";
 import { ArrowRight, CalendarClock, GitCompareArrows, Search } from "lucide-react";
 import { CompassDial } from "@/components/FitBadge";
 import { CollegeCard } from "@/components/CollegeCard";
-import { EmptyState, LoadingState, Pill, SampleBadge } from "@/components/ui";
+import { EmptyState, LoadingState, Pill } from "@/components/ui";
 import { classifyFit } from "@/lib/fit";
 import { daysUntil, fmtDate, PLAN_LABELS } from "@/lib/format";
 import { valueScore } from "@/lib/score";
@@ -41,9 +41,7 @@ export default function DashboardPage() {
             <p className="mt-2 max-w-lg text-sm text-slate-600">
               Class of {profile.graduationYear ?? "—"} · {savedColleges.length} saved{" "}
               {savedColleges.length === 1 ? "college" : "colleges"} · {openTasks.length} open tasks.
-              {profile.isSample && (
-                <span className="ml-2 inline-flex align-middle"><SampleBadge label="Demo profile" /></span>
-              )}
+
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link href="/find" className="btn-primary"><Search size={15} /> Find colleges</Link>

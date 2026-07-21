@@ -44,6 +44,16 @@ export const SCORECARD_FIELDS = [
   "latest.cost.net_price.private.by_income_level.75001-110000",
   "latest.cost.net_price.private.by_income_level.110001-plus",
   "latest.aid.median_debt_suppressed.overall",
+  "latest.aid.pell_grant_rate",
+  "latest.student.demographics.race_ethnicity.white",
+  "latest.student.demographics.race_ethnicity.black",
+  "latest.student.demographics.race_ethnicity.hispanic",
+  "latest.student.demographics.race_ethnicity.asian",
+  "latest.student.demographics.race_ethnicity.aian",
+  "latest.student.demographics.race_ethnicity.nhpi",
+  "latest.student.demographics.race_ethnicity.two_or_more",
+  "latest.student.demographics.race_ethnicity.non_resident_alien",
+  "latest.student.demographics.race_ethnicity.unknown",
   "latest.earnings.10_yrs_after_entry.median",
   "latest.academics.program_available.assoc_or_bachelors",
   "latest.academics.program_percentage",
@@ -180,6 +190,17 @@ export function scorecardToCollege(r: Raw, dataYear: string): College {
     medianFederalDebt: num(r, "latest.aid.median_debt_suppressed.overall"),
     medianEarnings10yr: num(r, "latest.earnings.10_yrs_after_entry.median"),
     majors: majors(r),
+    demographics: (() => {
+      const get = (k: string) => num(r, `latest.student.demographics.race_ethnicity.${k}`);
+      const d: Record<string, number | null> = {
+        white: get("white"), black: get("black"), hispanic: get("hispanic"), asian: get("asian"),
+        aian: get("aian"), nhpi: get("nhpi"), two_or_more: get("two_or_more"),
+        non_resident: get("non_resident_alien"), unknown: get("unknown"),
+      };
+      const entries = Object.entries(d).filter(([, v]) => v !== null) as [string, number][];
+      return entries.length ? (Object.fromEntries(entries) as Record<string, number>) : null;
+    })(),
+    pellGrantRate: num(r, "latest.aid.pell_grant_rate"),
     applicationFee: null,
     deadlines: [], // Scorecard has no deadline data — user adds/verifies these
     requirements: [],

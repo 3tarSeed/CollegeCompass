@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { ExternalLink, HelpCircle, Plus, Trash2 } from "lucide-react";
 import { EmptyState, LoadingState, Pill, SampleBadge } from "@/components/ui";
-import { estimateCost, type CostBreakdown } from "@/lib/cost";
+import { estimateCost, grantLikelihood, type CostBreakdown } from "@/lib/cost";
 import { INCOME_BAND_LABELS, type IncomeBand } from "@/lib/types";
 import { fmtDate, fmtMoney, NOT_REPORTED } from "@/lib/format";
 import type { College, Scholarship } from "@/lib/types";
@@ -112,6 +112,13 @@ export default function FinancialAidPage() {
           Grants and scholarships lower what you pay. Loans and work-study never reduce the net
           prices shown in this app. Aid is estimated, never guaranteed.
         </p>
+        <p className="mt-2 max-w-3xl rounded-lg bg-surface p-3 text-xs text-slate-600">
+          <strong className="text-navy">What is scholarship displacement?</strong> Some colleges reduce
+          the aid they give you when you win outside scholarships. Good policies reduce loans and
+          work-study first; less favorable ones reduce grants. Rules vary by college and some states
+          restrict displacement at public institutions — each college&apos;s policy is shown below when
+          published, and it&apos;s always worth confirming with the aid office before accepting awards.
+        </p>
       </header>
 
       <section className="card p-6" aria-labelledby="sch-h">
@@ -198,6 +205,7 @@ export default function FinancialAidPage() {
                 .filter((s) => s.status === "awarded" && (s.collegeId === null || s.collegeId === c.id))
                 .reduce((a, s) => a + (s.amount ?? 0), 0);
               const cost = estimateCost(profile, c, { extraScholarships: awarded });
+              const gl = grantLikelihood(profile, c);
               return (
                 <div key={c.id} className="card p-5">
                   <div className="flex flex-wrap items-center gap-2">
@@ -212,6 +220,17 @@ export default function FinancialAidPage() {
                     <div className="flex justify-between"><dt className="text-slate-500">Your awarded scholarships</dt><dd className="font-medium text-fitGreen">− {fmtMoney(cost.scholarships)}</dd></div>
                     <div className="flex justify-between border-t border-slate-100 pt-1.5"><dt className="font-semibold text-navy">Est. net cost / yr</dt><dd className="font-bold text-teal">{fmtMoney(cost.netAnnual)}</dd></div>
                   </dl>
+                  <div className="mt-3">
+                    <Pill tone={gl.level === "Higher" ? "green" : gl.level === "Moderate" ? "amber" : gl.level === "Limited" ? "red" : "slate"}>
+                      {gl.level === "Unknown" ? "Aid outlook: not enough data" : `${gl.level} likelihood of grants/scholarships`}
+                    </Pill>
+                  </div>
+                  {c.financialAid?.scholarshipDisplacementPolicy && (
+                    <p className="mt-2 text-xs text-slate-600">
+                      <strong className="text-navy">Displacement policy:</strong>{" "}
+                      {c.financialAid.scholarshipDisplacementPolicy}
+                    </p>
+                  )}
                   <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
                     <Pill tone="slate">FAFSA: {c.financialAid?.requiresFafsa == null ? NOT_REPORTED : c.financialAid.requiresFafsa ? "required" : "not required"}</Pill>
                     <Pill tone="slate">CSS: {c.financialAid?.requiresCssProfile == null ? NOT_REPORTED : c.financialAid.requiresCssProfile ? "required" : "not required"}</Pill>

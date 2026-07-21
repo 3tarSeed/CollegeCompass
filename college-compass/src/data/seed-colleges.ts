@@ -70,6 +70,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 8900, "30001_48000": 10400, "48001_75000": 14600, "75001_110000": 19800, "110001_plus": 23900 },
     avgGrantAid: 9400, medianFederalDebt: 18500, medianEarnings10yr: 72400,
     majors: ["Computer Science", "Engineering", "Biology", "Business", "Economics", "Nursing", "Psychology"],
+    demographics: { white: 0.46, black: 0.24, hispanic: 0.12, asian: 0.09, two_or_more: 0.05, non_resident: 0.03, unknown: 0.01 },
+    pellGrantRate: 0.31,
     applicationFee: 75,
     deadlines: [
       dl("sample-chesapeake-state", "early_action", "Early Action application", "2026-11-01"),
@@ -79,6 +81,7 @@ export const SEED_COLLEGES: College[] = [
     ],
     requirements: STD_REQS,
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside scholarships reduce unmet need, then loans and work-study, before any university grant is reduced. Displacement of need-based grants is prohibited for Maryland public institutions.",
       requiresFafsa: true, requiresCssProfile: false, priorityAidDeadline: "2027-01-15",
       meetsFullNeed: false, needBlind: true, meritAidAvailable: true,
       notes: "Automatic merit review with Early Action application.",
@@ -112,6 +115,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 2900, "30001_48000": 3600, "48001_75000": 8200, "75001_110000": 15800, "110001_plus": 43200 },
     avgGrantAid: 62300, medianFederalDebt: 12000, medianEarnings10yr: 98600,
     majors: ["Computer Science", "Economics", "Political Science", "Biology", "History", "Mathematics"],
+    demographics: { white: 0.41, asian: 0.18, hispanic: 0.14, black: 0.09, two_or_more: 0.06, non_resident: 0.11, unknown: 0.01 },
+    pellGrantRate: 0.17,
     applicationFee: 80,
     deadlines: [
       dl("sample-harborlight", "early_decision", "Early Decision application", "2026-11-01"),
@@ -126,6 +131,7 @@ export const SEED_COLLEGES: College[] = [
       { key: "interview", label: "Alumni interview", detail: "Offered where available", required: false },
     ],
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside awards first replace the student employment and summer-work expectation; institutional grants are reduced only after those are fully replaced.",
       requiresFafsa: true, requiresCssProfile: true, priorityAidDeadline: "2027-02-01",
       meetsFullNeed: true, needBlind: true, meritAidAvailable: false,
       notes: "Need-based aid only; no merit scholarships.",
@@ -159,6 +165,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 11200, "30001_48000": 13100, "48001_75000": 17400, "75001_110000": 22100, "110001_plus": 25600 },
     avgGrantAid: 7800, medianFederalDebt: 21000, medianEarnings10yr: 78900,
     majors: ["Engineering", "Computer Science", "Architecture", "Business", "Agriculture"],
+    demographics: { white: 0.58, black: 0.11, hispanic: 0.10, asian: 0.12, two_or_more: 0.05, non_resident: 0.03, unknown: 0.01 },
+    pellGrantRate: 0.24,
     applicationFee: 60,
     deadlines: [
       dl("sample-blue-ridge-tech", "early_action", "Early Action application", "2026-11-15"),
@@ -167,6 +175,7 @@ export const SEED_COLLEGES: College[] = [
     ],
     requirements: STD_REQS.filter((r) => r.key !== "recommendations"),
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside scholarships reduce loans first. Institutional grants are only reduced if total aid would exceed the cost of attendance.",
       requiresFafsa: true, requiresCssProfile: false, priorityAidDeadline: "2027-03-01",
       meetsFullNeed: false, needBlind: true, meritAidAvailable: true,
       provenance: SAMPLE_PROV("financial aid"),
@@ -199,6 +208,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 16800, "30001_48000": 18900, "48001_75000": 23200, "75001_110000": 28800, "110001_plus": 36100 },
     avgGrantAid: 38600, medianFederalDebt: 24500, medianEarnings10yr: 61200,
     majors: ["Psychology", "Biology", "English", "Business", "Computer Science", "Studio Art"],
+    demographics: { white: 0.66, hispanic: 0.11, black: 0.08, asian: 0.06, two_or_more: 0.05, non_resident: 0.03, unknown: 0.01 },
+    pellGrantRate: 0.28,
     applicationFee: 0,
     deadlines: [
       dl("sample-elmwood", "early_decision", "Early Decision application", "2026-11-15"),
@@ -214,6 +225,7 @@ export const SEED_COLLEGES: College[] = [
       { key: "interview", label: "Optional interview", required: false },
     ],
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside scholarships stack with merit awards up to full tuition; beyond that, college grants are reduced dollar-for-dollar.",
       requiresFafsa: true, requiresCssProfile: true, priorityAidDeadline: "2027-02-15",
       meetsFullNeed: false, needBlind: false, meritAidAvailable: true,
       notes: "Merit awards up to half tuition; no separate application.",
@@ -247,6 +259,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 4100, "30001_48000": 5200, "48001_75000": 7100, "75001_110000": 8600, "110001_plus": 9300 },
     avgGrantAid: 3100, medianFederalDebt: 8200, medianEarnings10yr: 44800,
     majors: ["Nursing", "Business", "Computer Science", "Cybersecurity", "General Studies"],
+    demographics: { white: 0.39, black: 0.28, hispanic: 0.18, asian: 0.08, two_or_more: 0.04, unknown: 0.03 },
+    pellGrantRate: 0.44,
     applicationFee: 0,
     deadlines: [
       dl("sample-monocacy-cc", "rolling", "Rolling admission — apply anytime", null),
@@ -259,6 +273,7 @@ export const SEED_COLLEGES: College[] = [
       { key: "fafsa", label: "FAFSA", required: true },
     ],
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside scholarships never reduce college aid unless combined aid exceeds the cost of attendance.",
       requiresFafsa: true, requiresCssProfile: false, priorityAidDeadline: "2027-03-01",
       meetsFullNeed: null, needBlind: null, meritAidAvailable: true,
       provenance: SAMPLE_PROV("financial aid"),
@@ -291,6 +306,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 9800, "30001_48000": 12400, "48001_75000": 18700, "75001_110000": 27900, "110001_plus": 46800 },
     avgGrantAid: 44200, medianFederalDebt: 17500, medianEarnings10yr: 88300,
     majors: ["Business", "Economics", "Computer Science", "Communications", "Biology"],
+    demographics: { white: 0.55, black: 0.13, hispanic: 0.09, asian: 0.10, two_or_more: 0.06, non_resident: 0.06, unknown: 0.01 },
+    pellGrantRate: 0.19,
     applicationFee: 85,
     deadlines: [
       dl("sample-piedmont", "early_decision", "Early Decision I", "2026-11-15"),
@@ -306,6 +323,7 @@ export const SEED_COLLEGES: College[] = [
       { key: "interview", label: "Evaluative interview", detail: "Strongly recommended", required: false },
     ],
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside awards reduce the loan and work expectation first; need-based grants may be reduced once loans are eliminated.",
       requiresFafsa: true, requiresCssProfile: true, priorityAidDeadline: "2027-02-01",
       meetsFullNeed: true, needBlind: false, meritAidAvailable: true,
       provenance: SAMPLE_PROV("financial aid"),
@@ -338,6 +356,8 @@ export const SEED_COLLEGES: College[] = [
     netPriceByIncome: { "0_30000": 9100, "30001_48000": 10800, "48001_75000": 14200, "75001_110000": 18400, "110001_plus": 21700 },
     avgGrantAid: 6900, medianFederalDebt: 19800, medianEarnings10yr: 56700,
     majors: ["Environmental Science", "Computer Science", "Education", "Business", "Marine Biology", "Psychology"],
+    demographics: { white: 0.52, hispanic: 0.14, asian: 0.13, black: 0.05, two_or_more: 0.08, aian: 0.02, nhpi: 0.02, non_resident: 0.03, unknown: 0.01 },
+    pellGrantRate: 0.36,
     applicationFee: 60,
     deadlines: [
       dl("sample-cascadia", "priority", "Priority application", "2027-01-31"),
@@ -352,6 +372,7 @@ export const SEED_COLLEGES: College[] = [
       { key: "fafsa", label: "FAFSA", required: true },
     ],
     financialAid: {
+      scholarshipDisplacementPolicy: "Outside scholarships reduce self-help aid (loans/work-study) before any grant reduction, per state policy for public institutions.",
       requiresFafsa: true, requiresCssProfile: false, priorityAidDeadline: "2027-01-31",
       meetsFullNeed: false, needBlind: true, meritAidAvailable: true,
       provenance: SAMPLE_PROV("financial aid"),

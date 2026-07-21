@@ -46,7 +46,7 @@ export default function FindPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [sort, setSort] = useState<SortKey>("score");
   const [page, setPage] = useState(1);
-  const [apiStatus, setApiStatus] = useState<"idle" | "loading" | "live" | "demo" | "error">("idle");
+  const [apiStatus, setApiStatus] = useState<"idle" | "loading" | "live" | "fallback" | "error">("idle");
   const [apiError, setApiError] = useState("");
 
   const set = (patch: Partial<Filters>) => {
@@ -54,7 +54,7 @@ export default function FindPage() {
     setPage(1);
   };
 
-  // Fetch live Scorecard results for the current name/state; falls back to demo.
+  // Fetch live Scorecard results for the current name/state; falls back to bundled samples.
   const fetchLive = useCallback(async () => {
     setApiStatus("loading");
     setApiError("");
@@ -68,8 +68,8 @@ export default function FindPage() {
       if (filters.level === "two_year") params.set("level", "2");
       const res = await fetch(`/api/scorecard?${params}`);
       const json = await res.json();
-      if (res.status === 503 && json.demo) {
-        setApiStatus("demo");
+      if (res.status === 503 && json.fallback) {
+        setApiStatus("fallback");
         return;
       }
       if (!res.ok) {
@@ -168,7 +168,7 @@ export default function FindPage() {
         <h1 className="text-2xl font-semibold lg:text-3xl">Search every direction</h1>
         <p className="mt-1 text-sm text-slate-600">
           {apiStatus === "live" && <Pill tone="green">Live College Scorecard data</Pill>}
-          {apiStatus === "demo" && (
+          {apiStatus === "fallback" && (
             <Pill tone="amber">Sample data — add COLLEGE_SCORECARD_API_KEY for live results</Pill>
           )}
           {apiStatus === "loading" && <Pill tone="slate">Checking College Scorecard…</Pill>}

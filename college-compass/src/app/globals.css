@@ -49,3 +49,61 @@ h1, h2, h3 {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Print support ─────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    margin: 1.2cm;
+  }
+  body {
+    background: white !important;
+  }
+  /* Hide chrome & interactive controls */
+  header,
+  aside,
+  .no-print,
+  button,
+  select,
+  input,
+  input[type="checkbox"] {
+    display: none !important;
+  }
+  main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    break-inside: avoid;
+  }
+  /* Single column so sections print full width */
+  main .grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Comparison table: un-stick cells, allow full width, compact type */
+  .print-compact {
+    zoom: 0.62;
+  }
+  .print-compact th,
+  .print-compact td {
+    position: static !important;
+  }
+  .print-compact .overflow-x-auto,
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+  .print-compact table {
+    min-width: 0 !important;
+  }
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+.print-only {
+  display: none;
+}

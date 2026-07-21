@@ -139,3 +139,74 @@ export function estimateCost(
     usedIncomeBandNetPrice: grantInfo.usedBand,
   };
 }
+
+export type GrantLikelihood = "Higher" | "Moderate" | "Limited" | "Unknown";
+
+/**
+ * Indicator of how likely grant/scholarship aid is at this college for this
+ * student, from reported data. An estimate only — aid is decided by the
+ * college and is NEVER guaranteed. Not a probability.
+ */
+export function grantLikelihood(
+  student: StudentProfile,
+  college: College,
+): { level: GrantLikelihood; reasons: string[] } {
+  const reasons: string[] = [];
+  let signals = 0;
+  let score = 0;
+
+  const cost = estimateCost(student, college);
+  if (cost.usedIncomeBandNetPrice && cost.coa && cost.grants !== null) {
+    signals++;
+    const share = cost.grants / cost.coa;
+    if (share >= 0.4) score += 2;
+    else if (share > 0.1) score += 1;
+    if (share > 0.1) {
+      reasons.push(
+        `Students in your income band typically receive grants covering about ${Math.round(share * 100)}% of the cost of attendance here.`,
+      );
+    } else {
+      reasons.push("Students in your income band typically receive little grant aid here.");
+    }
+  } else if (college.avgGrantAid !== null && cost.coa) {
+    signals++;
+    const share = college.avgGrantAid / cost.coa;
+    if (share >= 0.4) score += 2;
+    else if (share > 0.1) score += 1;
+    reasons.push(
+      `Average grant aid here covers about ${Math.round(share * 100)}% of the cost of attendance (all aided students).`,
+    );
+  }
+
+  if (college.pellGrantRate !== null) {
+    signals++;
+    const lowIncome =
+      student.householdIncomeRange === "0_30000" || student.householdIncomeRange === "30001_48000";
+    if (college.pellGrantRate >= 0.35 && lowIncome) {
+      score += 2;
+      reasons.push(
+        `${Math.round(college.pellGrantRate * 100)}% of students here receive federal Pell Grants; with your reported income range you may qualify — file the FAFSA to find out.`,
+      );
+    } else {
+      reasons.push(`${Math.round(college.pellGrantRate * 100)}% of students here receive federal Pell Grants.`);
+    }
+  }
+
+  if (college.financialAid?.meetsFullNeed) {
+    signals++;
+    score += 2;
+    reasons.push("This college reports meeting 100% of demonstrated financial need.");
+  }
+  if (college.financialAid?.meritAidAvailable) {
+    signals++;
+    score += 1;
+    reasons.push("Merit scholarships are offered regardless of financial need.");
+  } else if (college.financialAid?.meritAidAvailable === false) {
+    signals++;
+    reasons.push("This college reports no merit scholarships — aid is need-based only.");
+  }
+
+  if (signals === 0) return { level: "Unknown", reasons: ["Not enough reported aid data to estimate."] };
+  const level: GrantLikelihood = score >= 3 ? "Higher" : score >= 1 ? "Moderate" : "Limited";
+  return { level, reasons };
+}
