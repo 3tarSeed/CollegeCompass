@@ -1,0 +1,34 @@
+{
+  "comparable": {
+    "N": 751,
+    "T": "0.149968",
+    "alfred_vintage_date": "2026-07-18",
+    "annualization": "252/5",
+    "base_rate": "0.250333",
+    "canonical_observations_sha256": "98ef5c9110cd1e23df2f64f8256ac764b0931cf79058987546eb6076d5ee05b7",
+    "canonicalization_version": "canon-v1",
+    "contract": "spx_rv5_v1",
+    "exceedance_count": 188,
+    "first_window_end": "2023-07-03",
+    "last_window_end": "2026-06-30",
+    "outcome_rule": "RV>T strict",
+    "quantile_method": "hyndman-fan-type-7",
+    "raw_response_sha256": "fd7f66182d9758c1b07ac4d55d404221db9bdda8e38f508dd4ade9e2046fc6c2",
+    "rounding": "half-even-6dp",
+    "sample_end": "2026-06-30",
+    "sample_start": "2023-07-01"
+  },
+  "diagnostics": {
+    "T_unrounded_30dp": "0.149967611220684587298229328022",
+    "min_abs_margin_to_T": "0.000042028567806089966145268645",
+    "observation_count": 772,
+    "return_count": 771
+  },
+  "environment": {
+    "decimal_context_prec": 60,
+    "implementation": "python-decimal",
+    "python_version": "3.9.6",
+    "run_at_utc": "2026-07-19T00:45:11.688528+00:00",
+    "script_version": "compute-threshold-py-v1"
+  }
+}

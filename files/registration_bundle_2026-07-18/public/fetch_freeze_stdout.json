@@ -1,0 +1,29 @@
+{
+  "alfred_vintage_date": "2026-07-18",
+  "canonical_access": "restricted",
+  "canonical_byte_count": 14578,
+  "canonical_observations_sha256": "98ef5c9110cd1e23df2f64f8256ac764b0931cf79058987546eb6076d5ee05b7",
+  "canonicalization_version": "canon-v1",
+  "first_date": "2023-06-01",
+  "http_status": 200,
+  "last_date": "2026-06-30",
+  "mime_type": "application/json; charset=UTF-8",
+  "missing_value_count": 32,
+  "observation_count": 772,
+  "raw_access": "restricted",
+  "raw_response_byte_count": 78798,
+  "raw_response_sha256": "fd7f66182d9758c1b07ac4d55d404221db9bdda8e38f508dd4ade9e2046fc6c2",
+  "request_params": {
+    "file_type": "json",
+    "observation_end": "2026-06-30",
+    "observation_start": "2023-06-01",
+    "realtime_end": "2026-07-18",
+    "realtime_start": "2026-07-18",
+    "series_id": "SP500"
+  },
+  "request_url_redacted": "https://api.stlouisfed.org/fred/series/observations?series_id=SP500&observation_start=2023-06-01&observation_end=2026-06-30&realtime_start=2026-07-18&realtime_end=2026-07-18&file_type=json&api_key=REDACTED",
+  "retrieved_at_utc": "2026-07-19T00:45:11.290355+00:00",
+  "script_version": "fetch-freeze-v1",
+  "series_id": "SP500",
+  "source": "FRED / ALFRED (values sourced from S&P Dow Jones Indices)"
+}

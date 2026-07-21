@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-surface text-slate-800 font-body antialiased;
+}
+
+h1, h2, h3 {
+  @apply font-display text-navy;
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-card shadow-card border border-slate-200/70;
+  }
+  .btn {
+    @apply inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors
+      focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white hover:bg-blue-700;
+  }
+  .btn-ghost {
+    @apply btn border border-slate-300 bg-white text-navy hover:bg-slate-50;
+  }
+  .btn-teal {
+    @apply btn bg-teal text-white hover:bg-teal-700;
+  }
+  .field {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm
+      focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand;
+  }
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1;
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-teal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

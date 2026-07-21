@@ -1,0 +1,9 @@
+REGISTRATION GATE: PASS — implementations agree exactly.
+  alfred_vintage_date = 2026-07-18
+  N = 751
+  exceedance_count = 188
+  T = 0.149968
+  base_rate = 0.250333
+  canonical_observations_sha256 = 98ef5c9110cd1e23df2f64f8256ac764b0931cf79058987546eb6076d5ee05b7
+
+Safe to proceed: synthetic artifacts -> contract file -> definition_artifact_hash -> external anchor.

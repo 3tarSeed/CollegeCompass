@@ -1,0 +1,35 @@
+{
+  "comparable": {
+    "contract": "spx_rv5_v1",
+    "canonical_observations_sha256": "98ef5c9110cd1e23df2f64f8256ac764b0931cf79058987546eb6076d5ee05b7",
+    "raw_response_sha256": "fd7f66182d9758c1b07ac4d55d404221db9bdda8e38f508dd4ade9e2046fc6c2",
+    "alfred_vintage_date": "2026-07-18",
+    "sample_start": "2023-07-01",
+    "sample_end": "2026-06-30",
+    "first_window_end": "2023-07-03",
+    "last_window_end": "2026-06-30",
+    "N": 751,
+    "exceedance_count": 188,
+    "T": "0.149968",
+    "base_rate": "0.250333",
+    "quantile_method": "hyndman-fan-type-7",
+    "rounding": "half-even-6dp",
+    "annualization": "252/5",
+    "outcome_rule": "RV>T strict",
+    "canonicalization_version": "canon-v1"
+  },
+  "diagnostics": {
+    "T_unrounded_30dp": "0.1499676112206845872982293280215",
+    "min_abs_margin_to_T": "4.202856780608996614526864453871e-5",
+    "observation_count": 772,
+    "return_count": 771
+  },
+  "environment": {
+    "implementation": "r-rmpfr",
+    "script_version": "compute-threshold-r-v1",
+    "r_version": "4.6.1",
+    "rmpfr_version": "1.1.2",
+    "prec_bits": 200,
+    "run_at_utc": "2026-07-19T00:45:12Z"
+  }
+}
