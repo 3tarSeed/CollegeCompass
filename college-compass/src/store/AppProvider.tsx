@@ -32,6 +32,7 @@ import { MAX_COMPARE } from "@/lib/types";
 interface AppState {
   ready: boolean;
   demoMode: boolean;
+  supabaseAvailable: boolean;
   userEmail: string | null;
   profile: StudentProfile;
   colleges: College[]; // seed + fetched, deduped by id (live never overwritten by sample)
@@ -265,6 +266,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const value: AppState = {
     ready,
     demoMode: !supabaseConfigured() || !userId,
+    supabaseAvailable: supabaseConfigured(),
     userEmail,
     profile,
     colleges,

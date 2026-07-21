@@ -58,11 +58,11 @@ export async function loadRemote(userId: string): Promise<Partial<PersistedState
   const sb = getSupabase();
   if (!sb) return null;
   const [profileRes, savedRes, tasksRes, listRes, schRes] = await Promise.all([
-    sb.from("profiles").select("*").eq("id", userId).maybeSingle(),
-    sb.from("saved_colleges").select("*").eq("user_id", userId),
-    sb.from("application_tasks").select("*").eq("user_id", userId),
-    sb.from("comparison_lists").select("*").eq("user_id", userId).limit(1).maybeSingle(),
-    sb.from("scholarships").select("*").eq("user_id", userId),
+    sb.from("college_profiles").select("*").eq("id", userId).maybeSingle(),
+    sb.from("college_saved").select("*").eq("user_id", userId),
+    sb.from("college_application_tasks").select("*").eq("user_id", userId),
+    sb.from("college_comparison_lists").select("*").eq("user_id", userId).limit(1).maybeSingle(),
+    sb.from("college_scholarships").select("*").eq("user_id", userId),
   ]);
 
   const p = profileRes.data;
@@ -134,7 +134,7 @@ export async function loadRemote(userId: string): Promise<Partial<PersistedState
 export async function saveRemoteProfile(userId: string, profile: StudentProfile): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
-  await sb.from("profiles").upsert({
+  await sb.from("college_profiles").upsert({
     id: userId,
     first_name: profile.firstName,
     graduation_year: profile.graduationYear,
@@ -175,12 +175,12 @@ export async function syncRemoteCollections(
   if (!sb) return;
   // Simple replace-style sync keeps the adapter predictable.
   await Promise.all([
-    sb.from("saved_colleges").delete().eq("user_id", userId),
-    sb.from("application_tasks").delete().eq("user_id", userId),
-    sb.from("scholarships").delete().eq("user_id", userId).eq("is_sample", false),
+    sb.from("college_saved").delete().eq("user_id", userId),
+    sb.from("college_application_tasks").delete().eq("user_id", userId),
+    sb.from("college_scholarships").delete().eq("user_id", userId).eq("is_sample", false),
   ]);
   if (state.saved.length) {
-    await sb.from("saved_colleges").insert(
+    await sb.from("college_saved").insert(
       state.saved.map((s) => ({
         user_id: userId,
         college_id: s.collegeId,
@@ -190,7 +190,7 @@ export async function syncRemoteCollections(
     );
   }
   if (state.tasks.length) {
-    await sb.from("application_tasks").insert(
+    await sb.from("college_application_tasks").insert(
       state.tasks.map((t) => ({
         user_id: userId,
         college_id: t.collegeId,
@@ -205,7 +205,7 @@ export async function syncRemoteCollections(
   }
   const nonSample = state.scholarships.filter((s) => !s.isSample);
   if (nonSample.length) {
-    await sb.from("scholarships").insert(
+    await sb.from("college_scholarships").insert(
       nonSample.map((s) => ({
         user_id: userId,
         college_id: s.collegeId,
@@ -220,17 +220,17 @@ export async function syncRemoteCollections(
     );
   }
   const { data: existing } = await sb
-    .from("comparison_lists")
+    .from("college_comparison_lists")
     .select("id")
     .eq("user_id", userId)
     .limit(1)
     .maybeSingle();
   if (existing) {
     await sb
-      .from("comparison_lists")
+      .from("college_comparison_lists")
       .update({ college_ids: state.compareIds, updated_at: new Date().toISOString() })
       .eq("id", existing.id);
   } else {
-    await sb.from("comparison_lists").insert({ user_id: userId, college_ids: state.compareIds });
+    await sb.from("college_comparison_lists").insert({ user_id: userId, college_ids: state.compareIds });
   }
 }

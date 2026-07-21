@@ -106,8 +106,8 @@ async function main() {
       is_sample: true,
     })),
   );
-  await sb.from("application_requirements").delete().eq("is_sample", true);
-  res = await sb.from("application_requirements").insert(reqRows);
+  await sb.from("college_application_requirements").delete().eq("is_sample", true);
+  res = await sb.from("college_application_requirements").insert(reqRows);
   if (res.error) throw res.error;
 
   const aidRows = SEED_COLLEGES.filter((c) => c.financialAid).map((c) => ({
@@ -124,8 +124,8 @@ async function main() {
     last_verified: c.financialAid!.provenance.lastVerified,
     is_sample: true,
   }));
-  await sb.from("financial_aid_details").delete().eq("is_sample", true);
-  res = await sb.from("financial_aid_details").insert(aidRows);
+  await sb.from("college_financial_aid_details").delete().eq("is_sample", true);
+  res = await sb.from("college_financial_aid_details").insert(aidRows);
   if (res.error) throw res.error;
 
   const sourceRows = SEED_COLLEGES.map((c) => ({
@@ -135,7 +135,7 @@ async function main() {
     source_url: c.provenance.sourceUrl,
     data_year: c.provenance.dataYear,
   }));
-  res = await sb.from("data_sources").insert(sourceRows);
+  res = await sb.from("college_data_sources").insert(sourceRows);
   if (res.error) throw res.error;
 
   console.log("Done. Sample rows are flagged is_sample = true.");

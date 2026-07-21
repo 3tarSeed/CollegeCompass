@@ -30,7 +30,7 @@ const LINKS = [
 
 export function Nav() {
   const pathname = usePathname();
-  const { demoMode, userEmail, signOut, compareIds } = useApp();
+  const { demoMode, supabaseAvailable, userEmail, signOut, compareIds } = useApp();
   const [open, setOpen] = useState(false);
 
   const linkCls = (href: string) => {
@@ -98,7 +98,9 @@ export function Nav() {
         <div className="mt-auto border-t border-white/10 pt-3">
           {demoMode && (
             <p className="mb-2 rounded-lg bg-amber-400/15 px-3 py-2 text-[11px] leading-snug text-amber-200">
-              Demo mode — changes stay in this browser. Sign in to save your work to an account.
+              {supabaseAvailable
+                ? "Guest — changes stay in this browser. Sign in to sync them to your account."
+                : "Demo mode — accounts aren't configured, so changes stay in this browser."}
             </p>
           )}
           {account}

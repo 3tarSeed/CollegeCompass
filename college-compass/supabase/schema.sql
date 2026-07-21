@@ -3,8 +3,8 @@
 
 create extension if not exists "pgcrypto";
 
--- ── profiles ────────────────────────────────────────────────────────────
-create table if not exists public.profiles (
+-- ── college_profiles ────────────────────────────────────────────────────────────
+create table if not exists public.college_profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   first_name text,
   graduation_year int,
@@ -80,10 +80,10 @@ create table if not exists public.colleges (
   updated_at timestamptz default now()
 );
 
--- ── saved_colleges ──────────────────────────────────────────────────────
-create table if not exists public.saved_colleges (
+-- ── college_saved ──────────────────────────────────────────────────────
+create table if not exists public.college_saved (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.college_profiles (id) on delete cascade,
   college_id text not null references public.colleges (id) on delete cascade,
   application_plan text,
   notes text,
@@ -91,10 +91,10 @@ create table if not exists public.saved_colleges (
   unique (user_id, college_id)
 );
 
--- ── comparison_lists ────────────────────────────────────────────────────
-create table if not exists public.comparison_lists (
+-- ── college_comparison_lists ────────────────────────────────────────────────────
+create table if not exists public.college_comparison_lists (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.college_profiles (id) on delete cascade,
   name text not null default 'My comparison',
   college_ids text[] not null default '{}',
   constraint max_compare check (coalesce(array_length(college_ids, 1), 0) <= 8),
@@ -116,8 +116,8 @@ create table if not exists public.college_deadlines (
   is_sample boolean default false
 );
 
--- ── application_requirements ────────────────────────────────────────────
-create table if not exists public.application_requirements (
+-- ── college_application_requirements ────────────────────────────────────────────
+create table if not exists public.college_application_requirements (
   id uuid primary key default gen_random_uuid(),
   college_id text not null references public.colleges (id) on delete cascade,
   requirement text not null,            -- 'essay' | 'supplemental_essays' | 'transcript' | ...
@@ -129,10 +129,10 @@ create table if not exists public.application_requirements (
   is_sample boolean default false
 );
 
--- ── application_tasks (per-user checklist) ──────────────────────────────
-create table if not exists public.application_tasks (
+-- ── college_application_tasks (per-user checklist) ──────────────────────────────
+create table if not exists public.college_application_tasks (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles (id) on delete cascade,
+  user_id uuid not null references public.college_profiles (id) on delete cascade,
   college_id text not null references public.colleges (id) on delete cascade,
   task_key text not null,               -- 'application' | 'fee' | 'essay' | ...
   title text not null,
@@ -144,10 +144,10 @@ create table if not exists public.application_tasks (
   updated_at timestamptz default now()
 );
 
--- ── scholarships ────────────────────────────────────────────────────────
-create table if not exists public.scholarships (
+-- ── college_scholarships ────────────────────────────────────────────────────────
+create table if not exists public.college_scholarships (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references public.profiles (id) on delete cascade,
+  user_id uuid references public.college_profiles (id) on delete cascade,
   college_id text references public.colleges (id) on delete cascade,
   name text not null,
   amount numeric(10, 2),
@@ -159,8 +159,8 @@ create table if not exists public.scholarships (
   created_at timestamptz default now()
 );
 
--- ── financial_aid_details ───────────────────────────────────────────────
-create table if not exists public.financial_aid_details (
+-- ── college_financial_aid_details ───────────────────────────────────────────────
+create table if not exists public.college_financial_aid_details (
   id uuid primary key default gen_random_uuid(),
   college_id text not null references public.colleges (id) on delete cascade,
   requires_fafsa boolean default true,
@@ -177,8 +177,8 @@ create table if not exists public.financial_aid_details (
   is_sample boolean default false
 );
 
--- ── data_sources ────────────────────────────────────────────────────────
-create table if not exists public.data_sources (
+-- ── college_data_sources ────────────────────────────────────────────────────────
+create table if not exists public.college_data_sources (
   id uuid primary key default gen_random_uuid(),
   college_id text references public.colleges (id) on delete cascade,
   section text not null,                -- 'admissions' | 'cost' | 'outcomes' | ...
@@ -188,8 +188,8 @@ create table if not exists public.data_sources (
   retrieved_at timestamptz default now()
 );
 
--- ── verification_history ────────────────────────────────────────────────
-create table if not exists public.verification_history (
+-- ── college_verification_history ────────────────────────────────────────────────
+create table if not exists public.college_verification_history (
   id uuid primary key default gen_random_uuid(),
   college_id text references public.colleges (id) on delete cascade,
   section text not null,
@@ -199,38 +199,38 @@ create table if not exists public.verification_history (
 );
 
 -- ── Row-level security ──────────────────────────────────────────────────
-alter table public.profiles enable row level security;
-alter table public.saved_colleges enable row level security;
-alter table public.comparison_lists enable row level security;
-alter table public.application_tasks enable row level security;
-alter table public.scholarships enable row level security;
+alter table public.college_profiles enable row level security;
+alter table public.college_saved enable row level security;
+alter table public.college_comparison_lists enable row level security;
+alter table public.college_application_tasks enable row level security;
+alter table public.college_scholarships enable row level security;
 alter table public.colleges enable row level security;
 alter table public.college_deadlines enable row level security;
-alter table public.application_requirements enable row level security;
-alter table public.financial_aid_details enable row level security;
-alter table public.data_sources enable row level security;
-alter table public.verification_history enable row level security;
+alter table public.college_application_requirements enable row level security;
+alter table public.college_financial_aid_details enable row level security;
+alter table public.college_data_sources enable row level security;
+alter table public.college_verification_history enable row level security;
 
-create policy "own profile" on public.profiles
+create policy "own profile" on public.college_profiles
   for all using (auth.uid() = id) with check (auth.uid() = id);
-create policy "own saved" on public.saved_colleges
+create policy "own saved" on public.college_saved
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-create policy "own lists" on public.comparison_lists
+create policy "own lists" on public.college_comparison_lists
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-create policy "own tasks" on public.application_tasks
+create policy "own tasks" on public.college_application_tasks
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-create policy "own scholarships" on public.scholarships
+create policy "own college_scholarships" on public.college_scholarships
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Reference data is readable by any signed-in user; writes via service role only.
 create policy "read colleges" on public.colleges for select using (true);
 create policy "read deadlines" on public.college_deadlines for select using (true);
-create policy "read requirements" on public.application_requirements for select using (true);
-create policy "read aid details" on public.financial_aid_details for select using (true);
-create policy "read sources" on public.data_sources for select using (true);
-create policy "read verification" on public.verification_history for select using (true);
+create policy "read requirements" on public.college_application_requirements for select using (true);
+create policy "read aid details" on public.college_financial_aid_details for select using (true);
+create policy "read sources" on public.college_data_sources for select using (true);
+create policy "read verification" on public.college_verification_history for select using (true);
 
-create index if not exists idx_saved_user on public.saved_colleges (user_id);
-create index if not exists idx_tasks_user on public.application_tasks (user_id);
-create index if not exists idx_deadlines_college on public.college_deadlines (college_id);
-create index if not exists idx_requirements_college on public.application_requirements (college_id);
+create index if not exists idx_college_saved_user on public.college_saved (user_id);
+create index if not exists idx_college_tasks_user on public.college_application_tasks (user_id);
+create index if not exists idx_college_deadlines_college on public.college_deadlines (college_id);
+create index if not exists idx_college_requirements_college on public.college_application_requirements (college_id);
