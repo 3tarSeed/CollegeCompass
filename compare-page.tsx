@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
-import { X } from "lucide-react";
+import { Printer, X } from "lucide-react";
 import { ConfidenceBadge, FitBadge } from "@/components/FitBadge";
 import { EmptyState, LoadingState, Pill, SampleBadge } from "@/components/ui";
 import { classifyFit } from "@/lib/fit";
@@ -10,7 +10,7 @@ import { valueScore } from "@/lib/score";
 import {
   fmtDate, fmtMoney, fmtNum, fmtPct, fmtRange, NOT_REPORTED, OWNERSHIP_LABELS, PLAN_LABELS, TEST_POLICY_LABELS,
 } from "@/lib/format";
-import type { College } from "@/lib/types";
+import { MAX_COMPARE, type College } from "@/lib/types";
 import { useApp } from "@/store/AppProvider";
 
 type Best = "high" | "low" | "none";
@@ -221,7 +221,7 @@ export default function ComparePage() {
     return (
       <EmptyState
         title="Nothing to compare yet"
-        body="Add up to five colleges to your comparison from Find Colleges or any college page."
+        body={`Add up to ${MAX_COMPARE} colleges to your comparison from Find Colleges or any college page.`}
         action={<Link href="/find" className="btn-primary">Find colleges</Link>}
       />
     );
@@ -250,9 +250,12 @@ export default function ComparePage() {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">Compare</p>
-          <h1 className="text-2xl font-semibold lg:text-3xl">Side by side ({selected.length}/5)</h1>
+          <h1 className="text-2xl font-semibold lg:text-3xl">Side by side ({selected.length}/{MAX_COMPARE})</h1>
         </div>
-        <div className="flex flex-wrap gap-4 text-sm">
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <button className="btn-ghost no-print" onClick={() => window.print()}>
+            <Printer size={15} /> Print
+          </button>
           <label className="flex items-center gap-2">
             <input type="checkbox" className="h-4 w-4 accent-brand" checked={hideIdentical} onChange={(e) => setHideIdentical(e.target.checked)} />
             Hide identical rows
@@ -264,7 +267,7 @@ export default function ComparePage() {
         </div>
       </header>
 
-      <div className="card overflow-x-auto">
+      <div className="card overflow-x-auto print-compact">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr>
@@ -331,6 +334,12 @@ export default function ComparePage() {
           </tbody>
         </table>
       </div>
+      <p className="print-only text-[11px] text-slate-500">
+        Printed from College Compass on {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}.
+        Fit categories, Value &amp; Fit scores and net-cost figures are personalized estimates, not
+        guarantees; reported facts carry their data year and source in the app. Tip: print in
+        landscape for more than 3 colleges.
+      </p>
       <p className="text-[11px] text-slate-500">
         <Pill tone="green">Green</Pill> marks the strongest value in each numeric row among the colleges shown.
         Estimates are app-generated; reported facts carry their source and data year on each college&apos;s page.
