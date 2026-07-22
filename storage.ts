@@ -1,7 +1,7 @@
 "use client";
 /**
  * Persistence layer with two backends:
- *  - Local demo mode (browser localStorage) when Supabase isn't configured
+ *  - Local guest mode (browser localStorage) when Supabase isn't configured
  *    or the user isn't signed in.
  *  - Supabase (per-user rows, RLS-protected) when signed in.
  * The AppProvider is the only consumer.
@@ -43,7 +43,7 @@ export function saveLocal(state: PersistedState): void {
   try {
     window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
-    /* storage full/blocked — demo mode degrades gracefully */
+    /* storage full/blocked — guest mode degrades gracefully */
   }
 }
 
@@ -203,6 +203,10 @@ function collegeToRow(c: College) {
     median_federal_debt: c.medianFederalDebt,
     median_earnings_10yr: c.medianEarnings10yr,
     majors: c.majors,
+    major_shares: c.majorShares,
+    demographics: c.demographics,
+    pell_grant_rate: c.pellGrantRate,
+    gender_shares: c.genderShares,
     application_fee: c.applicationFee,
     is_sample: c.isSample ?? false,
     updated_at: new Date().toISOString(),

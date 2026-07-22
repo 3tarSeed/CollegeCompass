@@ -106,6 +106,8 @@ export interface College {
   majorShares: { name: string; share: number }[] | null;
   /** Share of enrolled students by race/ethnicity (0-1), from federal data. */
   demographics: Partial<Record<RaceKey, number>> | null;
+  /** Share of enrolled students by gender (0-1), from federal data. */
+  genderShares: { men: number | null; women: number | null } | null;
   /** Share of undergrads receiving federal Pell Grants (0-1). */
   pellGrantRate: number | null;
   applicationFee: number | null;
