@@ -215,6 +215,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   );
 
   const toggleSaved = useCallback((college: College) => {
+    // Register the record first so a college saved from outside the loaded
+    // catalog (e.g. the advisor's nationwide scan) resolves and isn't pruned.
+    if (!college.isSample) {
+      setFetched((prev) => (prev.some((f) => f.id === college.id) ? prev : [...prev, college]));
+    }
     setSaved((prev) => {
       if (prev.some((s) => s.collegeId === college.id)) {
         setTasks((t) => t.filter((task) => task.collegeId !== college.id));
