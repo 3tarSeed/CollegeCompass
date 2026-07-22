@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
-  const colleges = Array.isArray(body.colleges) ? body.colleges.slice(0, 25) : [];
+  const colleges = Array.isArray(body.colleges) ? body.colleges.slice(0, 60) : [];
   if (colleges.length === 0) {
     return NextResponse.json({ error: "No candidate colleges provided." }, { status: 400 });
   }
@@ -38,7 +38,7 @@ Rules you must follow:
 - Colleges flagged isSample:true are fictional sample records — say so if you rank them.
 - Respond with ONLY valid JSON, no markdown fences, in exactly this shape:
 {"recommendations":[{"collegeId":"...","rank":1,"headline":"one sentence on why it fits","reasons":["..."],"watchouts":["..."]}],"generalAdvice":"2-3 sentences"}
-- Rank at most 6 colleges. reasons: 2-4 items tied to the student's stated priorities. watchouts: 1-2 honest caveats each.`;
+- Rank at most 8 colleges. Candidates were pre-screened nationwide from the federal College Scorecard by the student's profile; the student's saved colleges are flagged saved:true. reasons: 2-4 items tied to the student's stated priorities. watchouts: 1-2 honest caveats each.`;
 
   const userMsg = `STUDENT PRIORITIES (most important to them): ${JSON.stringify(body.priorities ?? [])}
 SOCIAL-SCENE PREFERENCE: ${body.vibe ?? "no preference"}

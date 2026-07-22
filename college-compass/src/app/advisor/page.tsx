@@ -6,6 +6,7 @@ import { EmptyState, ErrorState, LoadingState, Pill, SampleBadge } from "@/compo
 import { FitBadge } from "@/components/FitBadge";
 import { classifyFit } from "@/lib/fit";
 import { estimateCost } from "@/lib/cost";
+import { valueScore } from "@/lib/score";
 import { fmtMoney } from "@/lib/format";
 import type { College } from "@/lib/types";
 import { useApp } from "@/store/AppProvider";
@@ -36,30 +37,77 @@ interface AdvisorResult {
 }
 
 export default function AdvisorPage() {
-  const { ready, profile, colleges, saved } = useApp();
+  const { ready, profile, colleges, saved, toggleSaved } = useApp();
   const [selected, setSelected] = useState<string[]>([]);
   const [vibe, setVibe] = useState("balanced");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "nokey" | "error">("idle");
   const [error, setError] = useState("");
   const [result, setResult] = useState<AdvisorResult | null>(null);
+  const [pool, setPool] = useState<Map<string, College>>(new Map());
+  const [scanNote, setScanNote] = useState("");
 
   if (!ready) return <LoadingState label="Loading advisor…" />;
 
   const toggle = (p: string) =>
     setSelected((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
 
-  // Candidates: saved colleges first, then the rest currently loaded, capped at 25.
   const savedIds = new Set(saved.map((s) => s.collegeId));
-  const candidates: College[] = [
-    ...colleges.filter((c) => savedIds.has(c.id)),
-    ...colleges.filter((c) => !savedIds.has(c.id)),
-  ].slice(0, 25);
+
+  /**
+   * Build the candidate pool: everything loaded in the app PLUS a nationwide
+   * scan of the federal College Scorecard (preferred states, home state, and
+   * the largest U.S. colleges). Saved colleges are always included; the rest
+   * are ranked by the student's weighted value score and capped at 60.
+   */
+  const buildPool = async (): Promise<{ candidates: College[]; map: Map<string, College>; note: string }> => {
+    const map = new Map<string, College>();
+    for (const c of colleges) map.set(c.id, c);
+
+    const queries: string[] = [];
+    const prefStates = profile.preferredStates.filter(Boolean);
+    if (prefStates.length) queries.push(`state=${encodeURIComponent(prefStates.join(","))}`);
+    if (profile.homeState && !prefStates.includes(profile.homeState))
+      queries.push(`state=${encodeURIComponent(profile.homeState)}`);
+    queries.push(""); // nationwide, largest colleges first
+
+    let scanned = 0;
+    let anyLive = false;
+    for (const q of queries) {
+      try {
+        const res = await fetch(`/api/scorecard?level=1&per_page=100${q ? `&${q}` : ""}`);
+        const json = await res.json();
+        if (res.ok && Array.isArray(json.colleges)) {
+          anyLive = true;
+          for (const c of json.colleges as College[]) {
+            scanned++;
+            if (!map.has(c.id)) map.set(c.id, c);
+          }
+        }
+      } catch {
+        /* scan is best-effort; saved + loaded colleges still work */
+      }
+    }
+
+    const all = [...map.values()];
+    const savedList = all.filter((c) => savedIds.has(c.id));
+    const rest = all
+      .filter((c) => !savedIds.has(c.id))
+      .sort((a, b) => valueScore(profile, b).total - valueScore(profile, a).total);
+    const candidates = [...savedList, ...rest].slice(0, 60);
+    const note = anyLive
+      ? `Scanned ${scanned} U.S. colleges from the College Scorecard; sent the ${candidates.length} best matches for your profile (all saved colleges included).`
+      : `Live nationwide scan unavailable — compared the ${candidates.length} colleges already in your app.`;
+    return { candidates, map, note };
+  };
 
   const ask = async () => {
     setStatus("loading");
     setError("");
     setResult(null);
+    const { candidates, map, note } = await buildPool();
+    setPool(map);
+    setScanNote(note);
     const payload = {
       priorities: selected,
       vibe,
@@ -191,13 +239,14 @@ export default function AdvisorPage() {
           <Sparkles size={15} /> {status === "loading" ? "Thinking…" : "Rank my colleges"}
         </button>
         <p className="mt-2 text-[11px] text-slate-500">
-          Compares the {candidates.length} colleges currently in your app (saved colleges first). Save
-          or search more colleges to widen the pool. AI suggestions are a starting point, not
-          admissions or financial advice — verify anything important on the college&apos;s website.
+          Scans a nationwide pool of U.S. four-year colleges from the federal College Scorecard —
+          not just your saved list — then sends the best matches for your profile (saved colleges
+          always included). AI suggestions are a starting point, not admissions or financial
+          advice — verify anything important on the college&apos;s website.
         </p>
       </section>
 
-      {status === "loading" && <LoadingState label="The advisor is comparing your colleges…" />}
+      {status === "loading" && <LoadingState label="Scanning U.S. colleges and thinking…" />}
       {status === "nokey" && (
         <EmptyState
           title="AI advisor isn't configured yet"
@@ -208,11 +257,13 @@ export default function AdvisorPage() {
 
       {status === "done" && result?.recommendations?.length ? (
         <section className="space-y-4" aria-label="Advisor recommendations">
+          {scanNote && <p className="text-xs text-slate-500">{scanNote}</p>}
           {result.recommendations
             .sort((a, b) => a.rank - b.rank)
             .map((rec) => {
-              const college = colleges.find((c) => c.id === rec.collegeId);
+              const college = pool.get(rec.collegeId) ?? colleges.find((c) => c.id === rec.collegeId);
               if (!college) return null;
+              const isSaved = savedIds.has(college.id);
               return (
                 <article key={rec.collegeId} className="card p-5">
                   <div className="flex flex-wrap items-center gap-2">
@@ -225,6 +276,12 @@ export default function AdvisorPage() {
                     </Link>
                     <FitBadge category={classifyFit(profile, college).category} />
                     <Pill tone="navy">Est. {fmtMoney(estimateCost(profile, college).netAnnual)}/yr</Pill>
+                    <button
+                      onClick={() => toggleSaved(college)}
+                      className="ml-auto rounded-full border border-slate-300 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                    >
+                      {isSaved ? "Saved ✓" : "Save"}
+                    </button>
                   </div>
                   <p className="mt-2 text-sm font-medium text-slate-700">{rec.headline}</p>
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
