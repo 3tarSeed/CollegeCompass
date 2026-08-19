@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import {
   Bookmark,
+  Calculator,
   Sparkles,
   CalendarClock,
   ClipboardList,
@@ -13,6 +14,7 @@ import {
   LogOut,
   Menu,
   PiggyBank,
+  ShieldAlert,
   Search,
   UserRound,
   X,
@@ -29,6 +31,9 @@ const LINKS = [
   { href: "/applications", label: "Applications", icon: ClipboardList },
   { href: "/deadlines", label: "Deadlines", icon: CalendarClock },
   { href: "/financial-aid", label: "Financial Aid", icon: PiggyBank },
+  { href: "/sai", label: "SAI Estimator", icon: Calculator },
+  { href: "/displacement", label: "Displacement", icon: ShieldAlert },
+  { href: "/sai", label: "SAI Estimator", icon: Calculator },
   { href: "/profile", label: "Profile", icon: UserRound },
 ];
 
