@@ -84,6 +84,15 @@ export default function CollegeProfilePage() {
                   Admissions <ExternalLink size={13} />
                 </a>
               )}
+              {!college.isSample && (
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent(`${college.name} Common Data Set`)}`}
+                  target="_blank" rel="noopener noreferrer" className="btn-ghost"
+                  title="Find this college's self-published Common Data Set (admission factors, aid detail, waitlist stats)"
+                >
+                  Common Data Set <ExternalLink size={13} />
+                </a>
+              )}
               <button onClick={() => toggleSaved(college)} className={saved ? "btn-teal" : "btn-primary"} aria-pressed={saved}>
                 {saved ? <><BookmarkCheck size={15} /> Saved</> : <><Bookmark size={15} /> Save college</>}
               </button>

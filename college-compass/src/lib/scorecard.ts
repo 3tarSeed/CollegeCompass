@@ -209,6 +209,7 @@ export function scorecardToCollege(r: Raw, dataYear: string): College {
       return entries.length ? (Object.fromEntries(entries) as Record<string, number>) : null;
     })(),
     pellGrantRate: num(r, "latest.aid.pell_grant_rate"),
+    cds: null, // CDS is self-published by colleges; not in the federal API
     genderShares: (() => {
       const men = num(r, "latest.student.demographics.men");
       const women = num(r, "latest.student.demographics.women");

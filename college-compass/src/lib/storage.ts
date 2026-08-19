@@ -207,6 +207,7 @@ function collegeToRow(c: College) {
     demographics: c.demographics,
     pell_grant_rate: c.pellGrantRate,
     gender_shares: c.genderShares,
+    cds: c.cds,
     application_fee: c.applicationFee,
     is_sample: c.isSample ?? false,
     updated_at: new Date().toISOString(),

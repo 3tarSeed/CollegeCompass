@@ -106,6 +106,12 @@ export interface College {
   majorShares: { name: string; share: number }[] | null;
   /** Share of enrolled students by race/ethnicity (0-1), from federal data. */
   demographics: Partial<Record<RaceKey, number>> | null;
+  /**
+   * Common Data Set section H2 (need-based aid, full-time first-year cohort).
+   * Colleges publish this themselves; there is no API, so values are entered
+   * per college from its published CDS file. All nullable = "Not reported."
+   */
+  cds: CommonDataSetH2 | null;
   /** Share of enrolled students by gender (0-1), from federal data. */
   genderShares: { men: number | null; women: number | null } | null;
   /** Share of undergrads receiving federal Pell Grants (0-1). */
@@ -116,6 +122,25 @@ export interface College {
   financialAid: FinancialAidDetails | null;
   provenance: Provenance; // core record provenance
   isSample: boolean;
+}
+
+/** CDS H2 rows (letters match the standard CDS form). */
+export interface CommonDataSetH2 {
+  cohort: string; // e.g. "Fall 2023 first-year"
+  a_degreeSeekingUndergrads: number | null;
+  b_appliedNeedAid: number | null;
+  c_determinedNeed: number | null;
+  d_awardedAnyAid: number | null;
+  e_awardedNeedGrant: number | null;
+  f_awardedSelfHelp: number | null;
+  g_awardedNonNeedGrant: number | null;
+  h_needFullyMet: number | null;
+  i_pctNeedMet: number | null; // 0-100, includes self-help
+  j_avgAidPackage: number | null;
+  k_avgNeedGrant: number | null;
+  l_avgSelfHelp: number | null;
+  m_avgNeedLoan: number | null;
+  provenance: Provenance;
 }
 
 export type IncomeBand =

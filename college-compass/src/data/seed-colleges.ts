@@ -113,6 +113,7 @@ export const SEED_COLLEGES: College[] = [
     majorShares: null,
     demographics: { white: 0.42, asian: 0.21, black: 0.12, hispanic: 0.11, two_or_more: 0.05, non_resident: 0.04, unknown: 0.04 },
     genderShares: { men: 0.52, women: 0.48 },
+    cds: null,
     pellGrantRate: 0.17,
     applicationFee: 75,
     deadlines: [
@@ -155,6 +156,7 @@ export const SEED_COLLEGES: College[] = [
     majorShares: null,
     demographics: { white: 0.62, asian: 0.1, hispanic: 0.08, black: 0.05, two_or_more: 0.04, non_resident: 0.09, unknown: 0.02 },
     genderShares: { men: 0.52, women: 0.48 },
+    cds: null,
     pellGrantRate: 0.14,
     applicationFee: 65,
     deadlines: [
@@ -195,6 +197,7 @@ export const SEED_COLLEGES: College[] = [
     majorShares: null,
     demographics: { white: 0.39, hispanic: 0.28, non_resident: 0.11, black: 0.07, asian: 0.07, two_or_more: 0.04, unknown: 0.04 },
     genderShares: { men: 0.46, women: 0.54 },
+    cds: null,
     pellGrantRate: 0.15,
     applicationFee: 70,
     deadlines: [
@@ -248,6 +251,7 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.46, black: 0.24, hispanic: 0.12, asian: 0.09, two_or_more: 0.05, non_resident: 0.03, unknown: 0.01 },
     pellGrantRate: 0.31,
     genderShares: { men: 0.47, women: 0.53 },
+    cds: null,
     applicationFee: 75,
     deadlines: [
       dl("sample-chesapeake-state", "early_action", "Early Action application", "2026-11-01"),
@@ -295,6 +299,23 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.41, asian: 0.18, hispanic: 0.14, black: 0.09, two_or_more: 0.06, non_resident: 0.11, unknown: 0.01 },
     pellGrantRate: 0.17,
     genderShares: { men: 0.48, women: 0.52 },
+  cds: {
+    cohort: "Illustrative sample cohort",
+    a_degreeSeekingUndergrads: 1658,
+    b_appliedNeedAid: 1271,
+    c_determinedNeed: 984,
+    d_awardedAnyAid: 984,
+    e_awardedNeedGrant: 909,
+    f_awardedSelfHelp: 831,
+    g_awardedNonNeedGrant: 773,
+    h_needFullyMet: 190,
+    i_pctNeedMet: 77,
+    j_avgAidPackage: 44478,
+    k_avgNeedGrant: 23622,
+    l_avgSelfHelp: 5317,
+    m_avgNeedLoan: 3425,
+    provenance: SAMPLE_PROV("Common Data Set H2"),
+  },
     applicationFee: 80,
     deadlines: [
       dl("sample-harborlight", "early_decision", "Early Decision application", "2026-11-01"),
@@ -347,6 +368,7 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.58, black: 0.11, hispanic: 0.10, asian: 0.12, two_or_more: 0.05, non_resident: 0.03, unknown: 0.01 },
     pellGrantRate: 0.24,
     genderShares: { men: 0.61, women: 0.39 },
+    cds: null,
     applicationFee: 60,
     deadlines: [
       dl("sample-blue-ridge-tech", "early_action", "Early Action application", "2026-11-15"),
@@ -392,6 +414,7 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.66, hispanic: 0.11, black: 0.08, asian: 0.06, two_or_more: 0.05, non_resident: 0.03, unknown: 0.01 },
     pellGrantRate: 0.28,
     genderShares: { men: 0.42, women: 0.58 },
+    cds: null,
     applicationFee: 0,
     deadlines: [
       dl("sample-elmwood", "early_decision", "Early Decision application", "2026-11-15"),
@@ -445,6 +468,7 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.39, black: 0.28, hispanic: 0.18, asian: 0.08, two_or_more: 0.04, unknown: 0.03 },
     pellGrantRate: 0.44,
     genderShares: { men: 0.41, women: 0.59 },
+    cds: null,
     applicationFee: 0,
     deadlines: [
       dl("sample-monocacy-cc", "rolling", "Rolling admission — apply anytime", null),
@@ -494,6 +518,7 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.55, black: 0.13, hispanic: 0.09, asian: 0.10, two_or_more: 0.06, non_resident: 0.06, unknown: 0.01 },
     pellGrantRate: 0.19,
     genderShares: { men: 0.46, women: 0.54 },
+    cds: null,
     applicationFee: 85,
     deadlines: [
       dl("sample-piedmont", "early_decision", "Early Decision I", "2026-11-15"),
@@ -546,6 +571,7 @@ export const SEED_COLLEGES: College[] = [
     demographics: { white: 0.52, hispanic: 0.14, asian: 0.13, black: 0.05, two_or_more: 0.08, aian: 0.02, nhpi: 0.02, non_resident: 0.03, unknown: 0.01 },
     pellGrantRate: 0.36,
     genderShares: { men: 0.45, women: 0.55 },
+    cds: null,
     applicationFee: 60,
     deadlines: [
       dl("sample-cascadia", "priority", "Priority application", "2027-01-31"),

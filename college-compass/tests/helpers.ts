@@ -74,6 +74,7 @@ export function makeCollege(overrides: Partial<College> = {}): College {
     demographics: null,
     pellGrantRate: null,
     genderShares: null,
+    cds: null,
     majorShares: null,
     majors: ["Computer Science", "Biology"],
     applicationFee: 70,

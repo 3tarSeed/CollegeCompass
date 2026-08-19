@@ -77,6 +77,7 @@ create table if not exists public.colleges (
   demographics jsonb,
   pell_grant_rate numeric(5, 4),
   gender_shares jsonb,
+  cds jsonb,
   application_fee numeric(6, 2),
   is_sample boolean default false,
   raw jsonb,

@@ -1,4 +1,5 @@
-import type { College, IncomeBand, StudentProfile } from "./types";
+import type {
+  CommonDataSetH2, College, IncomeBand, StudentProfile } from "./types";
 
 export interface CostBreakdown {
   tuition: number | null;
@@ -147,6 +148,21 @@ export type GrantLikelihood = "Higher" | "Moderate" | "Limited" | "Unknown";
  * student, from reported data. An estimate only — aid is decided by the
  * college and is NEVER guaranteed. Not a probability.
  */
+/**
+ * CDS-based "% of need met with GRANTS ONLY" (no loans, no work-study).
+ * Formula (from the college's own CDS H2 figures): I − [(L + M) / K]
+ *   I = avg % of need met (includes self-help)   K = avg need-based grant
+ *   L = avg need-based self-help award            M = avg need-based loan
+ * Returns 0-1 or null when any input is not reported. Clamped to [0, 1].
+ */
+export function needMetGrantsOnly(cds: CommonDataSetH2 | null): number | null {
+  if (!cds) return null;
+  const { i_pctNeedMet: i, k_avgNeedGrant: k, l_avgSelfHelp: l, m_avgNeedLoan: m } = cds;
+  if (i === null || k === null || l === null || m === null || k <= 0) return null;
+  const v = i / 100 - (l + m) / k;
+  return Math.min(1, Math.max(0, v));
+}
+
 export function grantLikelihood(
   student: StudentProfile,
   college: College,
